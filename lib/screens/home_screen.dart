@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:share_x/screens/login_screen.dart';
 import 'package:share_x/utils/info_box.dart';
 
 import '../models/chat.dart';
@@ -246,13 +247,49 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'ShareX',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
-        automaticallyImplyLeading: false,
+        actions: [
+          PopupMenuButton<int>(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: const Row(
+                  children: [
+                    Icon(Icons.exit_to_app),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Log Out")
+                  ],
+                ),
+                onTap: () {
+                  FirebaseAuth.instance.signOut();
+                  InfoBox(
+                    'Signed out successfully',
+                    context: context,
+                    infoCategory: InfoCategory.success,
+                  );
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return const LoginScreen(); // Replace 'NewScreen' with your desired screen
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
+            // offset: Offset(0, 100),
+            // color: Colors.grey,
+            elevation: 2,
+          ),
+        ],
       ),
       body: chatList.isEmpty
           ? const Center(
@@ -277,15 +314,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         context: context,
                         builder: (ctx) {
                           return Dialog(
+                            clipBehavior: Clip.none,
                             backgroundColor: Colors.black,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width - 50,
-                              height: MediaQuery.of(context).size.width - 50,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image:
-                                        NetworkImage(otherUser["profileImage"]),
-                                    fit: BoxFit.contain),
+                            child: AspectRatio(
+                              aspectRatio: 1 / 1,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  16.0,
+                                ),
+                                child: Image.network(
+                                  otherUser['profileImage'],
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           );

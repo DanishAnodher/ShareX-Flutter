@@ -35,13 +35,21 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.otherUser["name"],
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(widget.otherUser["profileImage"]),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              widget.otherUser["name"],
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
-        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Column(
